@@ -5,10 +5,11 @@ import { Alert, Button, PasswordInput, Stack, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { SignInWithSocialProviderButton } from "./sign-in-with-social-provider-button";
 
 export function SignInForm() {
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<Error | null>(null);
   const router = useRouter();
   const form = useForm({
     initialValues: {
@@ -17,23 +18,25 @@ export function SignInForm() {
     },
   });
 
-  const handleSubmit = async (values: { email: string; password: string }) =>
+  const onSuccess = () => router.replace("/dashboard");
+
+  const signInWithEmail = async (values: { email: string; password: string }) =>
     authClient.signIn.email(
       { email: values.email, password: values.password },
       {
         onRequest: () => setIsLoading(true),
-        onSuccess: () => router.replace("/dashboard"),
+        onSuccess,
         onError: (ctx) => {
-          setError(ctx.error.message);
+          setError(ctx.error);
           setIsLoading(false);
         },
       },
     );
 
   return (
-    <form onSubmit={form.onSubmit(handleSubmit)}>
+    <form onSubmit={form.onSubmit(signInWithEmail)}>
       <Stack>
-        {error ? <Alert color="red">{error}</Alert> : null}
+        {error ? <Alert color="red">{error.message}</Alert> : null}
         <TextInput
           label="Email"
           type="email"
@@ -52,6 +55,12 @@ export function SignInForm() {
         <Button loading={isLoading} type="submit">
           Sign In
         </Button>
+
+        <SignInWithSocialProviderButton
+          onError={setError}
+          onSuccess={onSuccess}
+          provider="google"
+        />
       </Stack>
     </form>
   );
