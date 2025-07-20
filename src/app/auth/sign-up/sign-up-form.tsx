@@ -31,7 +31,7 @@ export default function SignUpForm() {
       },
       {
         onRequest: () => setIsLoading(true),
-        onSuccess: () => router.replace("/auth/profile"),
+        onSuccess: () => router.replace("/dashboard"),
         onError: (ctx) => {
           setError(ctx.error.message);
           setIsLoading(false);
