@@ -16,6 +16,7 @@ import { useDisclosure } from "@mantine/hooks";
 import { User } from "better-auth";
 import { useRouter } from "next/navigation";
 import { SignOutIcon, UserCircleIcon } from "@phosphor-icons/react";
+import { OrganizationSelect } from "./organization-select";
 
 export function DashboardAppShell({
   user,
@@ -52,8 +53,9 @@ export function DashboardAppShell({
         </Group>
       </AppShellHeader>
       <AppShellNavbar p="md">
+        <OrganizationSelect />
         {/* User menu */}
-        <Menu withArrow position="right">
+        <Menu withArrow position="top">
           <Menu.Target>
             <Button
               mt="auto"

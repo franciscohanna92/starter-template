@@ -1,20 +1,22 @@
-import { DashboardAppShell } from "./dashboard-app-shell";
-import { redirect } from "next/navigation";
 import { headers } from "next/headers";
-import { auth } from "@/lib/auth";
+import { DashboardAppShell } from "./dashboard-app-shell";
+import { auth, checkAuth } from "@/lib/auth";
+import { redirect } from "next/navigation";
 
 export default async function Layout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const session = await auth.api.getSession({
+  const { user } = await checkAuth();
+
+  const organizations = await auth.api.listOrganizations({
     headers: await headers(),
   });
 
-  if (!session) {
-    return redirect("/auth/sign-in");
+  if (!organizations.length) {
+    return redirect("/onboarding");
   }
 
-  return <DashboardAppShell user={session.user}>{children}</DashboardAppShell>;
+  return <DashboardAppShell user={user}>{children}</DashboardAppShell>;
 }
