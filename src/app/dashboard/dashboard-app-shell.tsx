@@ -16,13 +16,18 @@ import { useDisclosure } from "@mantine/hooks";
 import { User } from "better-auth";
 import { useRouter } from "next/navigation";
 import { SignOutIcon, UserCircleIcon } from "@phosphor-icons/react";
-import { OrganizationSelect } from "./organization-select";
+import { UserMenu } from "./user-menu";
+import { Organization } from "better-auth/plugins";
 
 export function DashboardAppShell({
   user,
+  organizations,
+  activeOrganization,
   children,
 }: {
   user: User;
+  organizations: Pick<Organization, "id" | "name">[];
+  activeOrganization: Pick<Organization, "id" | "name">;
   children: React.ReactNode;
 }) {
   const router = useRouter();
@@ -38,11 +43,11 @@ export function DashboardAppShell({
 
   return (
     <AppShell
-      header={{ height: 60 }}
+      // header={{ height: 60 }}
       navbar={{ width: 300, breakpoint: "sm", collapsed: { mobile: !opened } }}
       padding="md"
     >
-      <AppShellHeader>
+      {/* <AppShellHeader>
         <Group h="100%" px="md">
           <Burger
             opened={opened}
@@ -51,29 +56,13 @@ export function DashboardAppShell({
             size="sm"
           />
         </Group>
-      </AppShellHeader>
-      <AppShellNavbar p="md">
-        <OrganizationSelect />
-        {/* User menu */}
-        <Menu withArrow position="top">
-          <Menu.Target>
-            <Button
-              mt="auto"
-              leftSection={<UserCircleIcon weight="duotone" size={24} />}
-              variant="default"
-            >
-              {user.name}
-            </Button>
-          </Menu.Target>
-          <Menu.Dropdown>
-            <Menu.Item
-              rightSection={<SignOutIcon weight="bold" />}
-              onClick={signOut}
-            >
-              <Text> Sign out</Text>
-            </Menu.Item>
-          </Menu.Dropdown>
-        </Menu>
+      </AppShellHeader> */}
+      <AppShellNavbar p="xs">
+        <UserMenu
+          user={user}
+          organizations={organizations}
+          activeOrganization={activeOrganization}
+        />
       </AppShellNavbar>
       <AppShellMain>{children}</AppShellMain>
     </AppShell>

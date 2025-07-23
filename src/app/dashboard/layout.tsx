@@ -8,7 +8,7 @@ export default async function Layout({
 }: {
   children: React.ReactNode;
 }) {
-  const { user } = await checkAuth();
+  const { user, session } = await checkAuth();
 
   const organizations = await auth.api.listOrganizations({
     headers: await headers(),
@@ -18,5 +18,23 @@ export default async function Layout({
     return redirect("/onboarding");
   }
 
-  return <DashboardAppShell user={user}>{children}</DashboardAppShell>;
+  const activeOrganization =
+    organizations.find((org) => org.id === session.activeOrganizationId) ??
+    organizations[0];
+
+  return (
+    <DashboardAppShell
+      organizations={organizations.map((org) => ({
+        id: org.id,
+        name: org.name,
+      }))}
+      activeOrganization={{
+        id: activeOrganization.id,
+        name: activeOrganization.name,
+      }}
+      user={user}
+    >
+      {children}
+    </DashboardAppShell>
+  );
 }
